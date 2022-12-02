@@ -69,11 +69,11 @@ def handleSignUp(request):
         try:
             if User.objects.filter(email=email) != User.objects.filter(email=email).exists(): 
                 if len(password) < 5:
-                    messages.error(request,"Password too much short!!!")
+                    messages.error(request,"Password too much short")
                     return redirect('signup')
                 
                 if password != confirm_password:
-                    messages.error(request,"Passwords do not match!!!")
+                    messages.error(request,"Passwords do not match")
                     return redirect('signup')
                     
                 myuser = User.objects.create_user(username=username,email=email,password=password)
@@ -85,10 +85,10 @@ def handleSignUp(request):
         except:
             try:
                 if User.objects.filter(email=email).exists():
-                    messages.error(request,"Email exists Please Try other Email Address.....")
+                    messages.error(request,"Email exists Please Try other Email Address")
 
                 elif User.objects.filter(username=username).exists():
-                    messages.error(request,"Username exists Please Try another Username.....")
+                    messages.error(request,"Username exists Please Try another Username")
                 return render(request,'signup.html')
             except:
                 pass
@@ -127,9 +127,9 @@ def handleLogIn(request):
                 else:
                     return redirect('subscription')
             else:
-                messages.error(request,"Invalid username or password.")
+                messages.error(request,"Invalid username or password")
         except:
-            messages.error(request, "Unable to logIn!!!")
+            messages.error(request, "Unable to logIn")
 
     return render(request, "login.html")   
 
@@ -145,7 +145,7 @@ def handlelogout(request):
         logout(request)
         return redirect("login")
     except:
-        messages.error("Unable to logout!!!")
+        messages.error("Unable to logout")
         return redirect("home")
 
 def set_subscription(user):

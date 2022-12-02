@@ -27,19 +27,19 @@
                         <p class="text-secondary mb-4 mb-md-6">Already have an account? <a href={% url 'login' %} class="text-primary bold">Login here</a></p>
                         <form class="cozy" action="" method="POST">
                             <div class="form-group has-icon">
-                                <input type="text" id="username" name="username" class="form-control form-control-rounded" placeholder="Desired username">
+                                <input type="text" id="username" name="username" class="form-control form-control-rounded" placeholder="Desired username" required>
                                 <i class="icon fas fa-user-plus"></i>
                             </div>
                             <div class="form-group has-icon">
-                                <input type="text" id="email" name="email" class="form-control form-control-rounded" placeholder="Valid email"> 
+                                <input type="text" id="email" name="email" class="form-control form-control-rounded" placeholder="Valid email" required> 
                                 <i class="icon fas fa-envelope"></i>
                             </div>
                             <div class="form-group has-icon">
-                                <input type="password" id="password" name="password" class="form-control form-control-rounded" placeholder="Password">
+                                <input type="password" id="password" name="password" class="form-control form-control-rounded" placeholder="Password" required>
                                 <i class="icon fas fa-lock"></i>
                             </div>
                             <div class="form-group has-icon">
-                                <input type="password" id="confirm_password" name="confirm_password" class="form-control form-control-rounded" placeholder="Confirm Password">
+                                <input type="password" id="confirm_password" name="confirm_password" class="form-control form-control-rounded" placeholder="Confirm Password" required>
                                 <i class="icon fas fa-lock"></i>
                             </div>
                             <div class="form-group d-flex align-items-center justify-content-between">
