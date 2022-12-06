@@ -1,10 +1,28 @@
-FROM python:3.9-buster
+ARG PYTHON_VERSION=3.10-slim-buster
 
-WORKDIR /app
+FROM python:${PYTHON_VERSION}
 
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-COPY . .
+RUN mkdir -p /code
 
-CMD ["python3", "manage.py", "runserver", "0.0.0.0.8000"]
+WORKDIR /code
+
+COPY requirements.txt /tmp/requirements.txt
+
+RUN set -ex && \
+    pip install --upgrade pip && \
+    pip install -r /tmp/requirements.txt && \
+    rm -rf /root/.cache/
+
+COPY . /code/
+
+RUN python manage.py migrate
+
+RUN python manage.py collectstatic --noinput
+
+EXPOSE 8000
+
+# replace demo.wsgi with <project_name>.wsgi
+CMD ["gunicorn", "--bind", ":8000", "--workers", "2", "demo.wsgi"]
