@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,7 +32,6 @@ ALLOWED_HOSTS = ["*"]
 # env = environ.Env()
 # read .env file
 # environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
 
 
 # Application definition
@@ -84,14 +82,17 @@ WSGI_APPLICATION = 'ForecastDash.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get("DATABASE_NAME", "alex"),
+        'USER': os.environ.get("DATABASE_USER", "alex"),
+        'PASSWORD': os.environ.get("DATABASE_PASSWORD", "password"),
+        'HOST': os.environ.get("DATABASE_HOST", "localhost"),
+        'PORT': os.environ.get("DATABASE_PORT", 5432),
     }
 }
-
+# print("os..",os.environ)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -146,8 +147,8 @@ CHANNEL_LAYERS = {
 
 # STATIC_ROOT = os.path.join(BASE_DIR,"/static/")
 STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = [BASE_DIR / 'static']
+# STATICFILES_DIRS = [BASE_DIR / 'static']
 
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -177,6 +178,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'media/'
 
 # Stripe api keys
-STRIPE_PUBLISHABLE_KEY = 'pk_test_51M2Z01SIZVPMggpPEV2uDqTCJzQAGivEqIAIEaPELKlg8PHd8gd80nZwGg7rQ9sqxc5a8PhLPO3Sr8dv64eAde9c0098cvWOTy'
-STRIPE_SECRET_KEY = 'sk_test_51M2Z01SIZVPMggpPoCiA2fFNTL4kuGFQFCdLwEcBTooaZ6sO6APDPReYNAW7n4kQeml3GIEm3y3dZ3qy1rSxNIhX00Pl87n6h2'
-STRIPE_WEBHOOK_SECRET = 'whsec_4bcd158ff18b2b334ef8c79172bfe4b03d4a08694757943ee6c649cbd95a10a7'
+STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY", 'pk_test_51M2Z01SIZVPMggpPEV2uDqTCJzQAGivEqIAIEaPELKlg8PHd8gd80nZwGg7rQ9sqxc5a8PhLPO3Sr8dv64eAde9c0098cvWOTy')
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", 'sk_test_51M2Z01SIZVPMggpPoCiA2fFNTL4kuGFQFCdLwEcBTooaZ6sO6APDPReYNAW7n4kQeml3GIEm3y3dZ3qy1rSxNIhX00Pl87n6h2')
+# STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", 'whsec_4bcd158ff18b2b334ef8c79172bfe4b03d4a08694757943ee6c649cbd95a10a7')
