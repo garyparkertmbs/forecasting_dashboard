@@ -120,7 +120,7 @@ def lr_rf_fcast_alt(df, df1, df1_f1, model_list, model_title, input_forecast_per
 def run_fcast_full(df, input_forecast_period):
     ##################
     ### validate it[dhruvi] ###
-    items = df['items'].uniques()
+    items = df['Item'].unique()
     ##################
 
     input_forecast_period = input_forecast_period
