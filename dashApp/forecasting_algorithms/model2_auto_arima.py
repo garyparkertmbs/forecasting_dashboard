@@ -8,7 +8,7 @@ m_arima_set = 12
 def model2_auto_arima(df):
     ##################
     ### validate it[dhruvi] ###
-    items = df['items'].uniques()
+    items = df['Item'].unique()
     # defining the horizon and test size
 
     horizon = int(np.floor(len(df.index.unique())*.2))
