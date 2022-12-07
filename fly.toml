@@ -1,6 +1,6 @@
-# fly.toml file generated for floral-shape-4297 on 2022-12-06T18:57:45+05:30
+# fly.toml file generated for long-tree-2823 on 2022-12-07T19:44:23+05:30
 
-app = "floral-shape-4297"
+app = "long-tree-2823"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []

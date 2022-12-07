@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%9d!@%5&%%f4l@*u72f0dajjz#e@_%sl-h+3r!&2v6417teqop'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    "whitenoise.runserver_nostatic",
     'django.contrib.staticfiles',
     'dashApp',
     'django_plotly_dash.apps.DjangoPlotlyDashConfig',
@@ -51,6 +53,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -79,19 +83,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ForecastDash.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get("DATABASE_NAME", "alex"),
-        'USER': os.environ.get("DATABASE_USER", "alex"),
-        'PASSWORD': os.environ.get("DATABASE_PASSWORD", "password"),
-        'HOST': os.environ.get("DATABASE_HOST", "localhost"),
-        'PORT': os.environ.get("DATABASE_PORT", 5432),
+if (os.environ.get('DJANGO_ENVIRONMENT') == 'release'):
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'), conn_max_age=600),
     }
-}
+elif (os.environ.get('DJANGO_ENVIRONMENT') == 'development'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            # This is where you put the name of the db file. # If one doesn't exist, it will be created at migration time.    }
+            'NAME': 'db.sqlite3',
+        }}
 # print("os..",os.environ)
 
 # Password validation
@@ -114,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Authenticate user
 AUTHENTICATION_BACKENDS = ['dashApp.auth.CustomEmailAuthBackend.EmailAuthBackend',
-                          'django.contrib.auth.backends.ModelBackend',]
+                           'django.contrib.auth.backends.ModelBackend',]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -134,9 +138,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 ASGI_APPLICATION = 'strip.routing.application'
 
 CHANNEL_LAYERS = {
-    'default':{
+    'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG':{
+        'CONFIG': {
             'hosts': [('127.0.0.1', 6379),],
         }
     }
@@ -146,9 +150,14 @@ CHANNEL_LAYERS = {
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 # STATIC_ROOT = os.path.join(BASE_DIR,"/static/")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 STATIC_URL = '/static/'
-STATIC_ROOT = [BASE_DIR / 'static']
-# STATICFILES_DIRS = [BASE_DIR / 'static']
+if DEBUG:
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static')
+    ]
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -178,6 +187,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'media/'
 
 # Stripe api keys
-STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY", 'pk_test_51M2Z01SIZVPMggpPEV2uDqTCJzQAGivEqIAIEaPELKlg8PHd8gd80nZwGg7rQ9sqxc5a8PhLPO3Sr8dv64eAde9c0098cvWOTy')
-STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", 'sk_test_51M2Z01SIZVPMggpPoCiA2fFNTL4kuGFQFCdLwEcBTooaZ6sO6APDPReYNAW7n4kQeml3GIEm3y3dZ3qy1rSxNIhX00Pl87n6h2')
+STRIPE_PUBLISHABLE_KEY = os.environ.get(
+    "STRIPE_PUBLISHABLE_KEY", 'pk_test_51M2Z01SIZVPMggpPEV2uDqTCJzQAGivEqIAIEaPELKlg8PHd8gd80nZwGg7rQ9sqxc5a8PhLPO3Sr8dv64eAde9c0098cvWOTy')
+STRIPE_SECRET_KEY = os.environ.get(
+    "STRIPE_SECRET_KEY", 'sk_test_51M2Z01SIZVPMggpPoCiA2fFNTL4kuGFQFCdLwEcBTooaZ6sO6APDPReYNAW7n4kQeml3GIEm3y3dZ3qy1rSxNIhX00Pl87n6h2')
 # STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", 'whsec_4bcd158ff18b2b334ef8c79172bfe4b03d4a08694757943ee6c649cbd95a10a7')
